@@ -1,0 +1,49 @@
+#banner {
+    img {
+        width: 100%;
+    }
+}
+#product-list {
+    h2 {
+        padding: 30px 0;
+    }
+    #product-items {
+        display: flex;
+        flex-wrap: wrap;
+        // justify-content: space-between;
+        //이걸로 주면 items의 항목이 한 줄에 4개가 아닐때는 양옆으로(끝과 끝) 떨어짐..
+        .product-card {
+            width: 24%;
+            // 24*4 =96 , 4/3=1.3333 -> margin 주기!!
+            border: 1px solid #ccc;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            &:not(:nth-child(4n+0)){
+                //nth-child(an+b) 이용하기!!
+                //4의 배수가 아닐때만!
+                margin-right: 1.3333%;
+            }
+            .product-img {
+                img {
+                    width: 100%;
+                }
+            }
+            .product-contents {
+                padding: 24px;
+                span {
+                    // 칸을 띄우려고
+                    display: block;
+                }
+                .product-seller {
+                    padding-top: 16px;
+                    display: flex;
+                    align-items: center;
+                    img {
+                        width: 50px;
+                    }
+                }
+            }
+        }
+    }
+}
