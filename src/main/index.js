@@ -9,14 +9,30 @@ import MainProduct from './MainProduct';
 // 7.4 - useAsync.js 만들고!!
 import React from 'react';
 import useAsync from '../customHook/useAsync';
+import { API_URL } from '../config/contants';
+import { Carousel } from 'antd';            //ant design에서 들고 올거임!(슬라이더) https://ant.design/components/carousel/ - javascript로 가져온거!
+
 async function getProducts(){
-    const response = await axios.get("http://localhost:3000/products")
+    const response = await axios.get(`${API_URL}/products`)             //주소를 한방에 바꿔주기위해서! API_URL 따로 만들어서 다 바꿔주기!
+    // const response = await axios.get("http://localhost:3000/products")
     return response.data;       //getProducts()가 실행되면 response.data 데이터가 리턴!
 }
-
+//antd에서 들고온거 스타일!
+const contentStyle = {
+    height: '160px',
+    color: '#fff',
+    lineHeight: '160px',
+    textAlign: 'center',
+    position: 'absolute',
+    bottom: '50px'
+  };
 const MainPage = () => {
+    //7.4 antd 소스 가져오기!
+    const onChange = (currentSlide) => {
+        console.log(currentSlide);
+      };
     //💛7.4 useReducer()를 이용해서 항목데이터 불러오기!!
-    const [state, refetch] = useAsync(getProducts,[]);
+    const [state] = useAsync(getProducts,[]);
     //state를 다시 구조분해할당!
     const { loading, data, error } = state;
     if(loading) return <div>로딩중......</div>
@@ -55,13 +71,29 @@ const MainPage = () => {
             <div id="main">
                 <div id="banner">
                     {/* react는 img에 alt 속성이 없으면 계속 노란줄 뜸 */}
-                    <img src="images/banners/banner1.png" alt="" />
+                    {/* <img src="images/banners/banner1.png" alt="" /> */}
+                    {/* 7.4 antd에서 소스 가져오기 */}
+                    {/* - autoplay 해주면 자동으로 슬라이더 넘어감 */}
+                    <Carousel afterChange={onChange} autoplay>
+                        <div>
+                            <img src="images/banners/banner1.png" alt="" />
+                            <h3 style={contentStyle}>1</h3>
+                        </div>
+                        <div>
+                            <img src="images/banners/banner2.png" alt="" />
+                            <h3 style={contentStyle}>2</h3>
+                        </div>
+                        <div>
+                            <img src="images/banners/banner3.png" alt="" />
+                            <h3 style={contentStyle}>3</h3>
+                        </div>
+                    </Carousel>
                 </div>
                 <div id="product-list" className='inner'>
                     <h2>그린조명 최신상품</h2>
                     <div id="product-items">
                         {/* 7.4 쌤이랑 */}
-                        {data.map(product=><MainProduct key={product.id} product={product} />)}
+                        {data.map(product=><MainProduct key={product.id} product={product} />)} 
 
                         {/* 7.1 쌤이랑
                         {products.map(product=>(

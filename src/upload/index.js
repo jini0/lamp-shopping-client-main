@@ -1,13 +1,18 @@
 import React,{ useState } from 'react';
-import { Form, Divider, Input, InputNumber, Button, Upload } from 'antd';
+import { Form, Divider, Input, InputNumber, Button, Upload } from 'antd';       //7.4 Upload 추가
 // https://ant.design/components/form/ 이런 design 형식을 적용시켜주는거!
 // Divider는 hr같이 한 줄 띄우는거!
 import 'antd/dist/antd.css';            // antdesign도 css 적용해줘야함!!
 import './upload.scss';
+// 7.4
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config/contants';
 
 // ✔ 파일이름이 index.js 인거고 컴포넌트 이름은 UploadPage임!!
 const UploadPage = (props) => {
     //7.4 
+    const navigate = useNavigate();
     //이미지 경로 상태관리하기
     const [ imageUrl, setImageUrl ] = useState(null);
     //이미지 처리함수
@@ -23,15 +28,37 @@ const UploadPage = (props) => {
             //받은 이미지경로를 imageUrl에 넣어줌
             setImageUrl(imageUrl);
         }
+        console.log(info.file);
+    }
+    const onSubmit = (values) => {
+        //✔ axios post전송
+        //서버로 데이터 전송하기
+        // axios.post("http://localhost:3000/products",{
+        axios.post(`${API_URL}/products`,{
+            name: values.name,
+            seller: values.seller,
+            price: values.price,
+            imageUrl: imageUrl,                  //const [ imageUrl, setImageUrl ] = useState(null); 상태관리되고있는 여기있는 imageUrl을 쓸거임
+            description: values.description
+        }).then((result)=>{
+            console.log(result);
+            navigate("/");          //php의 '리다이렉션'이라고 생각하자!
+        })
+        .catch(e=>{
+            console.log(e);
+        })
     }
     return (
         <div id="upload-container" className='inner'>
-            <Form name="productUpload">
+            {/* onFinish -> 맨 밑에 Button인 'submit-button등록하기 버튼' 누를때 얘가 실행됨 */}
+            <Form name="productUpload" onFinish={onSubmit}>
                 <Form.Item name="imgUpload"
                     label={<div className='upload-label'>상품사진</div>}
                 >
                     {/* 7.4 Upload 추가 */}
-                    <Upload name="image" action="http://localhost:3000/image"
+                    {/* <Upload name="image" action="http://localhost:3000/image" */}
+                    {/* ✔ 백틱 기호는 자바스크립트 구문이니까 여기서 적어주려면 이렇게 {중괄호} 적어줘야함 */}
+                    <Upload name="image" action={`${API_URL}/image`}
                     listType="picture" showUploadList={false} onChange={onChangeImage}>
 
                         {/* 업로드 이미지가 있으면 이미지를 나타내고,
@@ -52,6 +79,7 @@ const UploadPage = (props) => {
                     </div> */}
                 </Form.Item>
                 <Divider/>
+                {/* name="seller" 여기 있는 name값이 input의 name값이라고 생각하자!! -> seller / name / price / description 다 있는지 보기! */}
                 <Form.Item name="seller"
                 label={<div className='upload-label'>판매자명</div>}>
                     <Input className="nameUpload" size="large"

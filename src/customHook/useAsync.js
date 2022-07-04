@@ -55,6 +55,8 @@ function useAsync(callback, deps=[]){
     }
     useEffect(()=>{
         fetchData();
+    // deps에 자꾸 노란색 밑줄 그어져서 없애주려고 밑에 주석으로 저걸 달아주면 사라짐! -> 무시하겠다! 의미
+    // eslint-disable-next-line
     }, deps);
     return [state, fetchData];          // 위에 적힌 { loading: false, data: null, error: action.error } 이런 객체가 return되는거!!
 }
